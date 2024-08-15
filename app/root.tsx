@@ -10,6 +10,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useNavigation,
+  useSubmit,
 } from '@remix-run/react';
 import { useEffect, useState } from 'react';
 
@@ -34,8 +35,9 @@ export const links: LinksFunction = () => [
 
 export default function App() {
   const { contacts, q } = useLoaderData<typeof loader>();
-  const navigation = useNavigation();
   const [query, setQuery] = useState(q || '');
+  const navigation = useNavigation();
+  const submit = useSubmit();
 
   // sync query with URL on back/forward navigation
   useEffect(() => {
@@ -59,7 +61,10 @@ export default function App() {
                 id="q"
                 aria-label="Search contacts"
                 name="q"
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.currentTarget.value);
+                  submit(event.currentTarget.form);
+                }}
                 placeholder="Search"
                 type="search"
                 value={query}
